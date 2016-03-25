@@ -23,3 +23,6 @@ Following specifics functions are implemented:
     -   factorial and pow which are the both functions that grow really fast in high values
 
 Because construction can be made with int, unsigned int, long, unsigned long, all of the following features are available on those types
+
+#DEVELOPPEMENT CURRENTLY IN PROCESS
+The code is currently in development
