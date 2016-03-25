@@ -27,9 +27,13 @@ public:
     SuperNumber         toNegative(void) const;
     bool                isPositive(void) const;
     bool                isNegative(void) const;
+    int                 toInt(void) const throw(std::logic_error);
+    unsigned int        toUInt(void) const throw(std::logic_error);
+    long                toLong(void) const throw(std::logic_error);
+    unsigned long       toULong(void) const throw(std::logic_error);
     SuperNumber         &swapValues(SuperNumber &);
     static SuperNumber  evalExpr(std::string const &);
-    static SuperNumber  factoriel(SuperNumber const &);
+    static SuperNumber  factorial(SuperNumber const &);
     static SuperNumber  pow(SuperNumber const &, SuperNumber const &);
 
 public:

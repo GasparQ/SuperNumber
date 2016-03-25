@@ -2,6 +2,8 @@
 // Created by gaspar_q on 3/25/16.
 //
 
+#include <limits.h>
+
 #include "SuperNumber.hpp"
 
 SuperNumber::SuperNumber()
@@ -58,7 +60,7 @@ SuperNumber     SuperNumber::evalExpr(const std::string &string)
     return superNumber;
 }
 
-SuperNumber     SuperNumber::factoriel(const SuperNumber &number)
+SuperNumber     SuperNumber::factorial(const SuperNumber &number)
 {
     SuperNumber facto = 1;
 
@@ -117,6 +119,38 @@ SuperNumber     &SuperNumber::swapValues(SuperNumber &number)
     *this = number;
     number = copy;
     return *this;
+}
+
+int SuperNumber::toInt(void) const throw(std::logic_error)
+{
+    if (*this > INT_MAX || *this < INT_MIN)
+        throw std::logic_error(getNumber() + " does not fit into int");
+    return stoi(getNumber());
+}
+
+unsigned int SuperNumber::toUInt(void) const throw(std::logic_error)
+{
+    if (*this > UINT_MAX)
+        throw std::logic_error(getNumber() + " does not fit into unsigned int");
+    if (*this < 0)
+        throw std::logic_error(getNumber() + " is negative and can't be converted as unsigned");
+    return static_cast<unsigned int>(stoul(getNumber()));
+}
+
+long SuperNumber::toLong(void) const throw(std::logic_error)
+{
+    if (*this > LONG_MAX || *this < LONG_MIN)
+        throw std::logic_error(getNumber() + " does not fit into long");
+    return stol(getNumber());
+}
+
+unsigned long SuperNumber::toULong(void) const throw(std::logic_error)
+{
+    if (*this > ULONG_MAX)
+        throw std::logic_error(getNumber() + " doest not fit into long");
+    if (*this < 0)
+        throw std::logic_error(getNumber() + " is negative and can't be converted as unsigned");
+    return stoul(getNumber());
 }
 
 SuperNumber     SuperNumber::operator+(const SuperNumber &number) const
