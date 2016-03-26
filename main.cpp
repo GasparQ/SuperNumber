@@ -12,9 +12,11 @@ int main()
     SuperNumber k("3923984287289374093831029831093230948029840923840923840923848230948230984");
     SuperNumber l("3923984287289374093831029831093230948029840923840923840923848230948230985");
     SuperNumber m("3923984287289374093831029831093230948029840923840923840923848230948230983");
+    SuperNumber test(3), test1(4);
 
     std::cout << i + j << std::endl;
     system(std::string("echo \"" + i.getNumber() + "+" + j.getNumber() + "\" | bc").c_str());
+
     std::cout << std::boolalpha << "j < 3" << (j < 3) << std::endl;
     std::cout << std::boolalpha << "j > 3" << (j > 3) << std::endl;
     std::cout << std::boolalpha << "j > k" << (j > k) << std::endl;
@@ -27,6 +29,11 @@ int main()
     std::cout << std::boolalpha << "j > m " << (j > m) << std::endl;
     std::cout << std::boolalpha << "j < m " << (j < m) << std::endl;
 
+    std::cout << i - j << std::endl;
+    system(std::string("echo \"" + i.getNumber() + "-" + j.getNumber() + "\" | bc").c_str());
+
+    std::cout << j - i << std::endl;
+    system(std::string("echo \"" + j.getNumber() + "-" + i.getNumber() + "\" | bc").c_str());
 
 //    i.toInt();
 //    std::string test("");

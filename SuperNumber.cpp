@@ -206,14 +206,43 @@ SuperNumber     SuperNumber::operator+(const SuperNumber &number) const
 
 SuperNumber SuperNumber::operator-(const SuperNumber &number) const
 {
+    std::string nb1 = getNumber();
+    std::string nb2 = number.getNumber();
+    long        len1 = nb1.length() - 1;
+    long        len2 = nb2.length() - 1;
+    std::string result = "";
+    char        res;
+    char        ret;
+
     if (isNegative() && number.isPositive())
         return (toPositive() + number.toPositive()).toNegative();
     else if (isPositive() && number.isNegative())
         return (*this + number.toPositive());
     else if (isNegative() && number.isNegative())
         return (number.toPositive() - toPositive());
-    //sub inf positive positive implementation
-    return SuperNumber();
+    else if (*this < number)
+        return (number - *this).toNegative();
+    ret = 0;
+    while (len1 >= 0 || len2 >= 0)
+    {
+        if (len1 >= 0 && len2 >= 0)
+        {
+            res = (nb1[len1] - '0') - (nb2[len2] - '0') - ret;
+            if (res < 0)
+            {
+                res = static_cast<char>(res + 10);
+                ret = 1;
+            }
+            else
+                ret = 0;
+            result.insert(0, 1, res + '0');
+        }
+        else if (len1 >= 0)
+            result.insert(0, 1, nb1[len1]);
+        --len1;
+        --len2;
+    }
+    return result;
 }
 
 SuperNumber SuperNumber::operator%(const SuperNumber &number) const
@@ -248,6 +277,14 @@ bool            SuperNumber::operator<(const SuperNumber &number) const
     size_t      len1 = num1.length();
     size_t      len2 = num2.length();
 
+    if (*this == number)
+        return false;
+    if (isPositive() && number.isNegative())
+        return (false);
+    if (isNegative() && number.isPositive())
+        return (true);
+    if (isNegative() && number.isNegative())
+        return (toPositive() > number.toPositive());
     if (len1 < len2)
         return true;
     else if (len1 > len2)
@@ -270,6 +307,14 @@ bool            SuperNumber::operator>(const SuperNumber &number) const
     size_t      len1 = num1.length();
     size_t      len2 = num2.length();
 
+    if (*this == number)
+        return false;
+    if (isPositive() && number.isNegative())
+        return (false);
+    if (isNegative() && number.isPositive())
+        return (true);
+    if (isNegative() && number.isNegative())
+        return (toPositive() > number.toPositive());
     if (len1 > len2)
         return true;
     else if (len1 < len2)
