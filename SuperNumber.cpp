@@ -8,7 +8,7 @@
 
 SuperNumber::SuperNumber()
 {
-    number << 0;
+    number = "0";
 }
 
 SuperNumber::SuperNumber(std::string const &expr)
@@ -18,22 +18,34 @@ SuperNumber::SuperNumber(std::string const &expr)
 
 SuperNumber::SuperNumber(int nb)
 {
-    number << nb;
+    std::stringstream   stringstream;
+
+    stringstream << nb;
+    number = stringstream.str();
 }
 
 SuperNumber::SuperNumber(unsigned int nb)
 {
-    number << nb;
+    std::stringstream   stringstream;
+
+    stringstream << nb;
+    number = stringstream.str();
 }
 
 SuperNumber::SuperNumber(long nb)
 {
-    number << nb;
+    std::stringstream   stringstream;
+
+    stringstream << nb;
+    number = stringstream.str();
 }
 
 SuperNumber::SuperNumber(unsigned long nb)
 {
-    number << nb;
+    std::stringstream   stringstream;
+
+    stringstream << nb;
+    number = stringstream.str();
 }
 
 SuperNumber::SuperNumber(const SuperNumber &number)
@@ -43,20 +55,20 @@ SuperNumber::SuperNumber(const SuperNumber &number)
 
 SuperNumber &SuperNumber::operator=(const SuperNumber &number)
 {
-    this->number.clear();
-    this->number << number.getNumber();
+    this->number = number.getNumber();
     return *this;
 }
 
 std::string const &SuperNumber::getNumber(void) const
 {
-    return number.str();
+    return number;
 }
 
 SuperNumber     SuperNumber::evalExpr(const std::string &string)
 {
     SuperNumber superNumber;
 
+    superNumber.number = string;
     return superNumber;
 }
 
@@ -155,7 +167,13 @@ unsigned long SuperNumber::toULong(void) const throw(std::logic_error)
 
 SuperNumber     SuperNumber::operator+(const SuperNumber &number) const
 {
-    SuperNumber result;
+    std::string nb1 = getNumber();
+    std::string nb2 = number.getNumber();
+    long        len1 = nb1.length() - 1;
+    long        len2 = nb2.length() - 1;
+    char        ret = 0;
+    char        res = 0;
+    std::string result = "";
 
     if (isNegative() && number.isNegative())
         return (toPositive() + number.toPositive()).toNegative();
@@ -163,8 +181,27 @@ SuperNumber     SuperNumber::operator+(const SuperNumber &number) const
         return number - toPositive();
     else if (isPositive() && number.isNegative())
         return *this - number.toPositive();
-    //add inf positive positive implementation
-    return result;
+    while (len1 >= 0 || len2 >= 0)
+    {
+        if (len1 >= 0 && len2 >= 0)
+        {
+            res = (nb1[len1] - '0') + (nb2[len2] - '0') + ret;
+            ret = static_cast<char>(res / 10);
+            res = static_cast<char>((res % 10) + '0');
+            result.insert(0, 1, res);
+        }
+        else if (len1 >= 0)
+        {
+            result.insert(0, 1, nb1[len1]);
+        }
+        else if (len2 >= 0)
+        {
+            result.insert(0, 1, nb2[len2]);
+        }
+        --len1;
+        --len2;
+    }
+    return SuperNumber(result);
 }
 
 SuperNumber SuperNumber::operator-(const SuperNumber &number) const
@@ -196,7 +233,7 @@ SuperNumber SuperNumber::operator*(const SuperNumber &number) const
 
 bool SuperNumber::operator==(const SuperNumber &number) const
 {
-    return this->number.str() == number.number.str();
+    return getNumber() == number.getNumber();
 }
 
 bool SuperNumber::operator!=(const SuperNumber &number) const
@@ -204,14 +241,48 @@ bool SuperNumber::operator!=(const SuperNumber &number) const
     return !(*this == number);
 }
 
-bool SuperNumber::operator<(const SuperNumber &number) const
+bool            SuperNumber::operator<(const SuperNumber &number) const
 {
-    return false;
+    std::string num1 = getNumber();
+    std::string num2 = number.getNumber();
+    size_t      len1 = num1.length();
+    size_t      len2 = num2.length();
+
+    if (len1 < len2)
+        return true;
+    else if (len1 > len2)
+        return false;
+    len2 = 0;
+    for (size_t i = 0; i < len1; ++i)
+    {
+        if (num1[i] > num2[i])
+            return (false);
+        if (num1[i] == num2[i])
+            ++len2;
+    }
+    return len2 < len1;
 }
 
-bool SuperNumber::operator>(const SuperNumber &number) const
+bool            SuperNumber::operator>(const SuperNumber &number) const
 {
-    return false;
+    std::string num1 = getNumber();
+    std::string num2 = number.getNumber();
+    size_t      len1 = num1.length();
+    size_t      len2 = num2.length();
+
+    if (len1 > len2)
+        return true;
+    else if (len1 < len2)
+        return false;
+    len2 = 0;
+    for (size_t i = 0; i < len1; ++i)
+    {
+        if (num1[i] < num2[i])
+            return (false);
+        if (num1[i] == num2[i])
+            ++len2;
+    }
+    return len2 < len1;
 }
 
 bool SuperNumber::operator<=(const SuperNumber &number) const
@@ -230,11 +301,14 @@ SuperNumber &SuperNumber::operator++()
     return *this;
 }
 
-SuperNumber     SuperNumber::operator++(const SuperNumber &number)
+SuperNumber     SuperNumber::operator++(int nb)
 {
     SuperNumber copy(*this);
 
-    ++(*this);
+    if (nb != 0)
+        (*this) += nb;
+    else
+        ++(*this);
     return copy;
 }
 
@@ -244,11 +318,14 @@ SuperNumber &SuperNumber::operator--()
     return *this;
 }
 
-SuperNumber     SuperNumber::operator--(const SuperNumber &number)
+SuperNumber     SuperNumber::operator--(int nb)
 {
     SuperNumber copy(*this);
 
-    --(*this);
+    if (nb != 0)
+        (*this) -= nb;
+    else
+        --(*this);
     return copy;
 }
 
@@ -280,4 +357,10 @@ SuperNumber &SuperNumber::operator*=(const SuperNumber &number)
 {
     *this = *this * number;
     return *this;
+}
+
+std::ostream    &operator<<(std::ostream &output, SuperNumber const &number1)
+{
+    output << number1.getNumber() << std::endl;
+    return output;
 }

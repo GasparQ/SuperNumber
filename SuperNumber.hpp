@@ -49,9 +49,9 @@ public:
     bool                operator<=(SuperNumber const &) const;
     bool                operator>=(SuperNumber const &) const;
     SuperNumber         &operator++();
-    SuperNumber         operator++(SuperNumber const &);
+    SuperNumber         operator++(int);
     SuperNumber         &operator--();
-    SuperNumber         operator--(SuperNumber const &);
+    SuperNumber         operator--(int);
     SuperNumber         &operator+=(SuperNumber const &);
     SuperNumber         &operator-=(SuperNumber const &);
     SuperNumber         &operator/=(SuperNumber const &);
@@ -59,7 +59,9 @@ public:
     SuperNumber         &operator*=(SuperNumber const &);
 
 private:
-    std::stringstream   number;
+    std::string         number;
 };
+
+std::ostream    &operator<<(std::ostream &output, SuperNumber const &);
 
 #endif //C_SUPERNUMBER_HPP
