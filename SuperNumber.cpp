@@ -250,14 +250,61 @@ SuperNumber SuperNumber::operator%(const SuperNumber &number) const
     return SuperNumber();
 }
 
-SuperNumber SuperNumber::operator/(const SuperNumber &number) const
+SuperNumber     SuperNumber::operator/(const SuperNumber &number) const
 {
+    SuperNumber result = 0;
+
+    if (isNegative() && number.isPositive())
+        return (toPositive() / number.toPositive()).toNegative();
+    else if (isPositive() && number.isNegative())
+        return (*this / number.toPositive()).toNegative();
+    else if (isNegative() && number.isNegative())
+        return (toPositive() / number.toPositive());
     return SuperNumber();
 }
 
-SuperNumber SuperNumber::operator*(const SuperNumber &number) const
+SuperNumber     SuperNumber::operator*(const SuperNumber &number) const
 {
-    return SuperNumber();
+    SuperNumber result = 0;
+    std::string nb1 = getNumber();
+    std::string nb2 = number.getNumber();
+    std::string reslt;
+    char        ret;
+    char        res;
+
+    if (isNegative() && number.isPositive())
+        return (toPositive() * number).toNegative();
+    else if (isPositive() && number.isNegative())
+        return (*this * number.toPositive()).toNegative();
+    else if (isNegative() && number.isNegative())
+        return (toPositive() * number.toPositive());
+    //positive positive multiplication
+    for (long i = nb2.length() - 1, l = 0; i >= 0; --i, ++l)
+    {
+        ret = 0;
+        reslt.clear();
+        for (long j = nb1.length() - 1; j >= 0 || ret > 0; --j)
+        {
+            if (j >= 0)
+            {
+                res = (nb1[j] - '0') * (nb2[i] - '0') + ret;
+                ret = static_cast<char>(res / 10);
+                res = static_cast<char>(res % 10);
+            }
+            else
+            {
+                res = ret;
+                ret = 0;
+            }
+            reslt.insert(0, 1, res + '0');
+        }
+        for (size_t k = 0; k < l; ++k)
+        {
+            reslt.insert(reslt.length(), 1, '0');
+        }
+        result += reslt;
+    }
+    return result;
 }
 
 bool SuperNumber::operator==(const SuperNumber &number) const
